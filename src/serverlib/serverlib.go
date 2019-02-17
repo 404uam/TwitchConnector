@@ -17,8 +17,10 @@ type ClientCred struct {
 }
 
 type Config struct {
-	BindIP   string `json:"rpc-bind-ip"`
-	BindPort int    `json:"rpc-bind-port"`
+	BindIP       string `json:"rpc-bind-ip"`
+	BindPort     int    `json:"rpc-bind-port"`
+	ClientID     string `json:"client-id"`
+	ClientSecret string
 }
 
 var (

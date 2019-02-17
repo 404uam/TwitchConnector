@@ -1,4 +1,5 @@
 {
   "rpc-bind-ip": "127.0.0.1",
-  "rpc-bind-port": 6969
+  "rpc-bind-port": 6969,
+  "client-id": "fwm5u260wzwb2tw0kf1t3fwghdhi8j"
 }

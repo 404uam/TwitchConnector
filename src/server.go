@@ -1,4 +1,4 @@
-package src
+package main
 
 import (
 	"./serverlib"
@@ -37,13 +37,15 @@ func loadSettings(path string) {
 	serverlib.IsErr("Error Reading", err)
 
 	err = json.Unmarshal(buffer, &config)
+	config.ClientSecret = os.Getenv("ClientSecret")
 	serverlib.IsErr("Error unmarshalling json", err)
 }
 
 func main() {
-	absPath, _ := filepath.Abs("./serverlib/settings.json")
+	absPath, _ := filepath.Abs("./src/serverlib/settings.json")
 	loadSettings(absPath)
 	serverlib.DebugLog.Println(fmt.Sprintf("%s:%d", config.BindIP, config.BindPort))
+	serverlib.DebugLog.Println(config.ClientID)
 
 	twitch := new(Twitch)
 
@@ -51,11 +53,11 @@ func main() {
 	err := server.Register(twitch)
 	serverlib.IsErr("Failed to register RPC server", err)
 
-	l, e := net.Listen("tcp", config.BindIP)
+	l, e := net.Listen("tcp", fmt.Sprintf("%s:%d", config.BindIP, config.BindPort))
+	serverlib.IsErr("Could not bind to listen", e)
 
-	serverlib.IsErr("Could not bind to to listen", e)
-	serverlib.DebugLog.Printf("serverlib started. Receiving on %s\n", fmt.Sprintf("%s:%d", config.BindIP, config.BindPort))
-
+	serverlib.DebugLog.Printf("Server started. Receiving on %s\n", fmt.Sprintf("%s:%d", config.BindIP, config.BindPort))
+	serverlib.DebugLog.Printf(config.ClientSecret)
 	for {
 		conn, _ := l.Accept()
 		go server.ServeConn(conn)
