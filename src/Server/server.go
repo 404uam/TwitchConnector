@@ -14,6 +14,15 @@ import (
 /***********************EXPORT METHODS******************/
 type Twitch string
 
+func (s *Twitch) Register(args *dfslib.Args, reply *bool) error {
+
+	return nil
+}
+func (s *Twitch) GetToken(args *dfslib.Args, reply *bool) error {
+
+	return nil
+}
+
 /*********************End of exported methods***************/
 type Config struct {
 	BindIP   string `json:"rpc-bind-ip"`
@@ -58,10 +67,4 @@ func main() {
 		go server.ServeConn(conn)
 	}
 
-}
-
-func isErr(msg string, e error) {
-	if e != nil {
-		errLog.Fatalf("%s, err = %s\n", msg, e.Error())
-	}
 }
