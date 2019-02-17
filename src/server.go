@@ -14,11 +14,11 @@ import (
 /***********************EXPORT METHODS******************/
 type Twitch string
 
-func (s *Twitch) Register(args *dfslib.Args, reply *bool) error {
+func (s *Twitch) Register(args *serverlib.ClientCred, reply *bool) error {
 
 	return nil
 }
-func (s *Twitch) GetToken(args *dfslib.Args, reply *bool) error {
+func (s *Twitch) GetToken(args **serverlib.ClientCred, reply *bool) error {
 
 	return nil
 }

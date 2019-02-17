@@ -5,14 +5,14 @@ import (
 	"os"
 )
 
-type serverCred struct {
+type ServerCred struct {
 	client_id     string
 	client_secret string
 	grant_type    string
 	refresh_token string
 }
 
-type clientCred struct {
+type ClientCred struct {
 	username string
 }
 
