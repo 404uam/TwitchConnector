@@ -18,7 +18,7 @@ func (s *Twitch) Register(args *serverlib.ClientCred, reply *bool) error {
 
 	return nil
 }
-func (s *Twitch) GetToken(args **serverlib.ClientCred, reply *bool) error {
+func (s *Twitch) GetToken(args *serverlib.ClientCred, reply *bool) error {
 
 	return nil
 }
@@ -42,7 +42,7 @@ func loadSettings(path string) {
 }
 
 func main() {
-	absPath, _ := filepath.Abs("./src/serverlib/settings.json")
+	absPath, _ := filepath.Abs("./serverlib/settings.json")
 	loadSettings(absPath)
 	serverlib.DebugLog.Println(fmt.Sprintf("%s:%d", config.BindIP, config.BindPort))
 	serverlib.DebugLog.Println(config.ClientID)
@@ -62,5 +62,4 @@ func main() {
 		conn, _ := l.Accept()
 		go server.ServeConn(conn)
 	}
-
 }
