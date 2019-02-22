@@ -16,7 +16,7 @@ type ServerCred struct {
 }
 
 type ClientCred struct {
-	username string
+	Username string
 }
 
 type Config struct {

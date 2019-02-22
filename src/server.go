@@ -15,7 +15,8 @@ import (
 type Twitch string
 
 func (s *Twitch) Register(args *serverlib.ClientCred, reply *bool) error {
-
+	*reply = true
+	serverlib.DebugLog.Println("Hi i've been called to register")
 	return nil
 }
 func (s *Twitch) GetToken(args *serverlib.ClientCred, reply *bool) error {
