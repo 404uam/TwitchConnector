@@ -1,7 +1,7 @@
-package main
+package server
 
 import (
-	"./serverlib"
+	"../serverlib"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -42,7 +42,7 @@ func loadSettings(path string) {
 	serverlib.IsErr("Error unmarshalling json", err)
 }
 
-func main() {
+func start() {
 	absPath, _ := filepath.Abs("./serverlib/settings.json")
 	loadSettings(absPath)
 	serverlib.DebugLog.Println(fmt.Sprintf("%s:%d", config.BindIP, config.BindPort))
