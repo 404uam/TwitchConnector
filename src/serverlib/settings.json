@@ -1,5 +1,7 @@
 {
   "rpc-bind-ip": "127.0.0.1",
   "rpc-bind-port": 6969,
-  "client-id": "fwm5u260wzwb2tw0kf1t3fwghdhi8j"
+  "client-id": "fwm5u260wzwb2tw0kf1t3fwghdhi8j",
+  "authentication": "https://id.twitch.tv/oauth2",
+  "redirect-url": "http://localhost:7001/redirect"
 }

@@ -2,8 +2,11 @@ package server
 
 import (
 	"../serverlib"
+	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/coreos/go-oidc"
+	"golang.org/x/oauth2"
 	"io/ioutil"
 	"net"
 	"net/rpc"
@@ -17,6 +20,21 @@ type Twitch string
 func (s *Twitch) Register(args *serverlib.ClientCred, reply *bool) error {
 	*reply = true
 	serverlib.DebugLog.Println("Hi i've been called to register")
+
+	provider, err := oidc.NewProvider(context.Background(), config.AuthenticationURL)
+	serverlib.IsErr("", err)
+
+	serverlib.DebugLog.Println("Creating oauth2Config...")
+	oauth2Config := oauth2.Config{
+		ClientID:     config.ClientID,
+		ClientSecret: config.ClientSecret,
+		RedirectURL:  config.RedirectURL,
+		Endpoint:     provider.Endpoint(),
+		Scopes:       scopes,
+	}
+
+	oidcVerifier = provider.Verifier(&oidc.Config{ClientID: config.ClientID})
+
 	return nil
 }
 func (s *Twitch) GetToken(args *serverlib.ClientCred, reply *bool) error {
@@ -27,7 +45,10 @@ func (s *Twitch) GetToken(args *serverlib.ClientCred, reply *bool) error {
 /*********************End of exported methods***************/
 
 var (
-	config serverlib.Config
+	config       serverlib.Config
+	scopes       = []string{oidc.ScopeOpenID, "channel_check_subscription"}
+	oidcVerifier *oidc.IDTokenVerifier
+	verify       string
 )
 
 func loadSettings(path string) {
@@ -42,8 +63,8 @@ func loadSettings(path string) {
 	serverlib.IsErr("Error unmarshalling json", err)
 }
 
-func start() {
-	absPath, _ := filepath.Abs("./serverlib/settings.json")
+func StartRPCServer() {
+	absPath, _ := filepath.Abs("./src/serverlib/settings.json")
 	loadSettings(absPath)
 	serverlib.DebugLog.Println(fmt.Sprintf("%s:%d", config.BindIP, config.BindPort))
 	serverlib.DebugLog.Println(config.ClientID)

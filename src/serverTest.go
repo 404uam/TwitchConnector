@@ -1,7 +1,7 @@
-package server
+package main
 
 import (
-	"../serverlib"
+	"./serverlib"
 	"fmt"
 	"net/rpc"
 )
