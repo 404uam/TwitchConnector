@@ -3,12 +3,15 @@ package server
 import (
 	"../serverlib"
 	"context"
+	"crypto/rand"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"github.com/coreos/go-oidc"
 	"golang.org/x/oauth2"
 	"io/ioutil"
 	"net"
+	"net/http"
 	"net/rpc"
 	"os"
 	"path/filepath"
@@ -17,14 +20,14 @@ import (
 /***********************EXPORT METHODS******************/
 type Twitch string
 
-func (s *Twitch) Register(args *serverlib.ClientCred, reply *bool) error {
-	*reply = true
+func (s *Twitch) Register(args *serverlib.ClientCred, reply *string) error {
 	serverlib.DebugLog.Println("Hi i've been called to register")
 
 	provider, err := oidc.NewProvider(context.Background(), config.AuthenticationURL)
 	serverlib.IsErr("", err)
 
 	serverlib.DebugLog.Println("Creating oauth2Config...")
+
 	oauth2Config := oauth2.Config{
 		ClientID:     config.ClientID,
 		ClientSecret: config.ClientSecret,
@@ -35,6 +38,14 @@ func (s *Twitch) Register(args *serverlib.ClientCred, reply *bool) error {
 
 	oidcVerifier = provider.Verifier(&oidc.Config{ClientID: config.ClientID})
 
+	var tokenBytes [255]byte
+	if _, err := rand.Read(tokenBytes[:]); err != nil {
+		return serverlib.AnnotateError(err, "Couldn't generate a session!", http.StatusInternalServerError)
+	}
+
+	state := hex.EncodeToString(tokenBytes[:])
+
+	*reply = oauth2Config.AuthCodeURL(state)
 	return nil
 }
 func (s *Twitch) GetToken(args *serverlib.ClientCred, reply *bool) error {

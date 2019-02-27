@@ -9,7 +9,7 @@ import (
 func main() {
 	serverIP := "127.0.0.1"
 	serverPort := "6969"
-	bo := false
+	var bo string
 
 	c, err := rpc.Dial("tcp", fmt.Sprintf("%s:%s", serverIP, serverPort))
 	serverlib.IsErr("Cannot Dial", err)
@@ -18,10 +18,6 @@ func main() {
 	err = c.Call("Twitch.Register", serverlib.ClientCred{"billy"}, &bo)
 	serverlib.IsErr("", err)
 
-	if bo {
-		fmt.Println("Hi Ho i'm True")
-	} else {
-		fmt.Println("Ho Hi i'm False")
-	}
+	fmt.Println(bo)
 
 }
