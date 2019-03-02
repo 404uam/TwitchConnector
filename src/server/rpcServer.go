@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/coreos/go-oidc"
+	"github.com/gorilla/sessions"
 	"golang.org/x/oauth2"
 	"io/ioutil"
 	"net"
@@ -44,6 +45,8 @@ func (s *Twitch) Register(args *serverlib.ClientCred, reply *string) error {
 	}
 
 	state := hex.EncodeToString(tokenBytes[:])
+	session.AddFlash(state, stateCallbackKey)
+	serverlib.DebugLog.Println(state)
 
 	*reply = oauth2Config.AuthCodeURL(state)
 	return nil
@@ -54,12 +57,19 @@ func (s *Twitch) GetToken(args *serverlib.ClientCred, reply *bool) error {
 }
 
 /*********************End of exported methods***************/
+const (
+	stateCallbackKey = "oauth-state-callback"
+	oauthSessionName = "oauth-oidc-session"
+)
 
 var (
 	config       serverlib.Config
-	scopes       = []string{oidc.ScopeOpenID, "channel_check_subscription"}
+	scopes       = []string{oidc.ScopeOpenID, "user_subscriptions"}
 	oidcVerifier *oidc.IDTokenVerifier
 	verify       string
+	cookieSecret = []byte(os.Getenv("SessionKey"))
+	cookieStore  = sessions.NewCookieStore(cookieSecret)
+	session      = sessions.NewSession(cookieStore, oauthSessionName)
 )
 
 func loadSettings(path string) {
@@ -75,7 +85,7 @@ func loadSettings(path string) {
 }
 
 func StartRPCServer() {
-	absPath, _ := filepath.Abs("./src/serverlib/settings.json")
+	absPath, _ := filepath.Abs("../src/serverlib/settings.json")
 	loadSettings(absPath)
 	serverlib.DebugLog.Println(fmt.Sprintf("%s:%d", config.BindIP, config.BindPort))
 	serverlib.DebugLog.Println(config.ClientID)
@@ -90,7 +100,6 @@ func StartRPCServer() {
 	serverlib.IsErr("Could not bind to listen", e)
 
 	serverlib.DebugLog.Printf("Server started. Receiving on %s\n", fmt.Sprintf("%s:%d", config.BindIP, config.BindPort))
-	serverlib.DebugLog.Printf(config.ClientSecret)
 	for {
 		conn, _ := l.Accept()
 		go server.ServeConn(conn)
