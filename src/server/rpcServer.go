@@ -87,7 +87,7 @@ func loadSettings(path string) {
 func StartRPCServer() {
 	absPath, _ := filepath.Abs("../src/serverlib/settings.json")
 	loadSettings(absPath)
-	serverlib.DebugLog.Println(fmt.Sprintf("%s:%d", config.BindIP, config.BindPort))
+	serverlib.DebugLog.Println(fmt.Sprintf("%s:%d", config.BindRPCIP, config.BindRPCPort))
 	serverlib.DebugLog.Println(config.ClientID)
 
 	twitch := new(Twitch)
@@ -96,10 +96,10 @@ func StartRPCServer() {
 	err := server.Register(twitch)
 	serverlib.IsErr("Failed to register RPC server", err)
 
-	l, e := net.Listen("tcp", fmt.Sprintf("%s:%d", config.BindIP, config.BindPort))
+	l, e := net.Listen("tcp", fmt.Sprintf("%s:%d", config.BindRPCIP, config.BindRPCPort))
 	serverlib.IsErr("Could not bind to listen", e)
 
-	serverlib.DebugLog.Printf("Server started. Receiving on %s\n", fmt.Sprintf("%s:%d", config.BindIP, config.BindPort))
+	serverlib.DebugLog.Printf("Server started. Receiving on %s\n", fmt.Sprintf("%s:%d", config.BindRPCIP, config.BindRPCPort))
 	for {
 		conn, _ := l.Accept()
 		go server.ServeConn(conn)
