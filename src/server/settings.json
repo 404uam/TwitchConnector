@@ -3,8 +3,8 @@
   "rpc-bind-port": 6969,
   "web-bind-ip": "127.0.0.1",
   "web-bind-port": 2222,
-  "path-to-ssl-cert": "/etc/letsencrypt/live/www.awptimustak.dev/fullchain.pem",
-  "path-to-ssl-key": "/etc/letsencrypt/live/www.awptimustak.dev/privkey.pem",
+  "path-to-ssl-cert": "C:/Users/Louis/Documents/awptimustak.dev_key_values/www.awptimustak.dev/fullchain2.pem",
+  "path-to-ssl-key": "C:/Users/Louis/Documents/awptimustak.dev_key_values/www.awptimustak.dev/privkey2.pem",
   "client-id": "fwm5u260wzwb2tw0kf1t3fwghdhi8j",
   "authentication": "https://id.twitch.tv/oauth2",
   "redirect-url": "http://127.0.0.1:7001"

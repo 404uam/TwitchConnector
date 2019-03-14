@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 )
 
@@ -26,6 +27,8 @@ type Config struct {
 	BindRPCPort       int    `json:"rpc-bind-port"`
 	BindWebIP         string `json:"web-bind-ip"`
 	BindWebPort       int    `json:"web-bind-port"`
+	SSLCert           string `json:"path-to-ssl-cert"`
+	SSLKey            string `json:"path-to-ssl-key"`
 	ClientID          string `json:"client-id"`
 	ClientSecret      string
 	AuthenticationURL string `json:"authentication"`
@@ -42,6 +45,18 @@ func IsErr(msg string, e error) {
 	if e != nil {
 		ErrLog.Fatalf("%s, err = %s\n", msg, e.Error())
 	}
+}
+
+func LoadSettings(path string) {
+	file, err := os.Open(path)
+	IsErr("Config not read", err)
+
+	buffer, err := ioutil.ReadAll(file)
+	IsErr("Error Reading", err)
+
+	err = json.Unmarshal(buffer, &ServerConfig)
+	ServerConfig.ClientSecret = os.Getenv("ClientSecret")
+	IsErr("Error unmarshalling json", err)
 }
 
 /********* Added from twitch oauth authorization code sample *****/
@@ -76,14 +91,4 @@ func AnnotateError(err error, annotation string, code int) error {
 	return HumanReadableWrapper{ToHuman: annotation, error: err}
 }
 
-func LoadSettings(path string) {
-	file, err := os.Open(path)
-	IsErr("Config not read", err)
-
-	buffer, err := ioutil.ReadAll(file)
-	IsErr("Error Reading", err)
-
-	err = json.Unmarshal(buffer, &ServerConfig)
-	ServerConfig.ClientSecret = os.Getenv("ClientSecret")
-	IsErr("Error unmarshalling json", err)
-}
+type Handler func(http.ResponseWriter, *http.Request) error
