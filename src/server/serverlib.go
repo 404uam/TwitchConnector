@@ -1,6 +1,8 @@
-package serverlib
+package server
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"log"
 	"os"
 )
@@ -31,8 +33,9 @@ type Config struct {
 }
 
 var (
-	DebugLog = log.New(os.Stderr, "[Server] ", 0)
-	ErrLog   = log.New(os.Stderr, "[Error] ", 0)
+	DebugLog     = log.New(os.Stderr, "[Server] ", 0)
+	ErrLog       = log.New(os.Stderr, "[Error] ", 0)
+	ServerConfig Config
 )
 
 func IsErr(msg string, e error) {
@@ -71,4 +74,16 @@ func AnnotateError(err error, annotation string, code int) error {
 		return nil
 	}
 	return HumanReadableWrapper{ToHuman: annotation, error: err}
+}
+
+func LoadSettings(path string) {
+	file, err := os.Open(path)
+	IsErr("Config not read", err)
+
+	buffer, err := ioutil.ReadAll(file)
+	IsErr("Error Reading", err)
+
+	err = json.Unmarshal(buffer, &ServerConfig)
+	ServerConfig.ClientSecret = os.Getenv("ClientSecret")
+	IsErr("Error unmarshalling json", err)
 }
