@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Minecraft Server Integration</title>
+{{/*    <script type="text/javascript">
+        <!--
+        function initiate() {
+            // Change page so the history won't contain the token
+            document.location.replace("https://www.awptimustak.dev");
+        }
+        -->
+    </script>*/}}
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0%;
+            overflow: hidden;
+        }
+        .bg-image{
+            background-image: url("background.png");
+            filter: blur(4px);
+            -webkit-filter: blur(4px);
+            width: 110%;
+            height: 110%;
+
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            top: -5%;
+            left: -5%;
+            position: absolute;
+        }
+        .bg-text{
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            color: white;
+            font-weight: bold;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            width: auto;
+            padding: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+{{/*<body onload="initiate()">*/}}
+<div class="bg-image"></div>
+<div class="bg-text">
+    <h1>Minecraft Server Integration - Access Token</h1>
+    <p>Your account has been linked! You can close this and return to the game</p>
+</div>
+</body>
+</html>
