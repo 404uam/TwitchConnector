@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	absPath, _ := filepath.Abs("./src/server/settings.json")
+	absPath, _ := filepath.Abs("./server/settings.json")
 	server.LoadSettings(absPath)
 	server.RunWebServer()
 }
