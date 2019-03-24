@@ -51,7 +51,7 @@ func RunWebServer() {
 	//go http.ListenAndServeTLS(fmt.Sprintf("%s:443",ServerConfig.BindWebIP),ServerConfig.SSLCert,ServerConfig.SSLKey,nil)
 	DebugLog.Println("Listening on SSL")
 	DebugLog.Println("Started running on http://localhost:2222")
-	path, _ := filepath.Abs("./src/html")
+	path, _ := filepath.Abs("./html")
 	DebugLog.Println(path)
 	fs := http.FileServer(http.Dir(path))
 	http.Handle("/", fs)
