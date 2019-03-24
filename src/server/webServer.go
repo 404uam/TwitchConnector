@@ -48,13 +48,13 @@ func RunWebServer() {
 		}
 		// End of imported Twitch sample code*/
 
-	DebugLog.Println(http.ListenAndServeTLS(fmt.Sprintf("%s:443", ServerConfig.BindWebIP), ServerConfig.SSLCert, ServerConfig.SSLKey, nil))
 	DebugLog.Println("Listening on SSL")
 	DebugLog.Println("Started running on http://localhost:2222")
 	path, _ := filepath.Abs("./html")
 	DebugLog.Println(path)
 	fs := http.FileServer(http.Dir(path))
 	http.Handle("/", fs)
+	DebugLog.Println(http.ListenAndServeTLS(fmt.Sprintf("%s:443", ServerConfig.BindWebIP), ServerConfig.SSLCert, ServerConfig.SSLKey, nil))
 	//DebugLog.Println(http.ListenAndServe(fmt.Sprintf("%s:%d", ServerConfig.BindWebIP, ServerConfig.BindWebPort), nil))
 	//IsErr("",err)
 
