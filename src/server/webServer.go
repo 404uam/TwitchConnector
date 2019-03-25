@@ -4,7 +4,35 @@ import (
 	"fmt"
 	"net/http"
 	"path/filepath"
+	"strings"
 )
+
+// FileSystem custom file system handler
+type FileSystem struct {
+	fs http.FileSystem
+}
+
+// Open opens file
+// Covers the possibility from default http handler to expose directory data
+//From Hau Ma (https://medium.com/@hau12a1/golang-http-serve-static-files-correctly-5feb98ae9da1)
+func (fs FileSystem) Open(path string) (http.File, error) {
+	f, err := fs.fs.Open(path)
+	if err != nil {
+		return nil, err
+	}
+
+	s, err := f.Stat()
+	//Will only serve html if index.html is present
+	// in our case, this is sufficient enough since the seperate redirects will be in their own folders
+	if s.IsDir() {
+		index := strings.TrimSuffix(path, "/") + "/index.html"
+		if _, err := fs.fs.Open(index); err != nil {
+			return nil, err
+		}
+	}
+
+	return f, nil
+}
 
 func RunWebServer() {
 	/* Imported from Twitch sample code
@@ -52,10 +80,9 @@ func RunWebServer() {
 	DebugLog.Println("Started running on http://localhost:2222")
 	path, _ := filepath.Abs("./html")
 	DebugLog.Println(path)
-	fs := http.FileServer(http.Dir(path))
-	http.Handle("/", fs)
+	fs := http.FileServer(FileSystem{http.Dir(path)})
+	http.Handle("/success/", http.StripPrefix(strings.TrimRight("/success/", "/"), fs))
 	DebugLog.Println(http.ListenAndServeTLS(fmt.Sprintf("%s:443", ServerConfig.BindWebIP), ServerConfig.SSLCert, ServerConfig.SSLKey, nil))
 	//DebugLog.Println(http.ListenAndServe(fmt.Sprintf("%s:%d", ServerConfig.BindWebIP, ServerConfig.BindWebPort), nil))
 	//IsErr("",err)
-
 }
